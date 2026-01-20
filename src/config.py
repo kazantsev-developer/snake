@@ -22,3 +22,11 @@ INITIAL_SNAKE_X = 5
 INITIAL_SNAKE_Y = 5
 INITIAL_FOOD_X = 10
 INITIAL_FOOD_Y = 10
+
+# Fruits
+FRUITS_DIR = "assets/image"
+FRUITS_IMAGES = [
+    "apple.png",
+    "banana.png",
+    "strawberry.png",
+]

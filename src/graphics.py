@@ -13,6 +13,12 @@ class GameWindow:
         self.window.title("Snake game")
         self.window.resizable(False, False)
 
+        # Download images
+        self.game.fruits.load(self.window)
+        self.game.current_fruit = (
+            self.game.fruits.get_random()
+        )
+
         # Create canvas for drawing
         self.canvas = tk.Canvas(
             self.window,
@@ -29,27 +35,20 @@ class GameWindow:
         self._center_window()
 
         # Bind keyboardevents
-        self.window.bind(
-            "<KeyRelease>", self._on_key_press
-        )
+        self.window.bind("<KeyRelease>", self._on_key_press)
 
     def _center_window(self):
         """Center the window on screen"""
         window_width = self.window.winfo_width()
         window_height = self.window.winfo_height()
-        screen_width = (
-            self.window.winfo_screenwidth()
-        )
-        screen_height = (
-            self.window.winfo_screenheight()
-        )
+        screen_width = self.window.winfo_screenwidth()
+        screen_height = self.window.winfo_screenheight()
 
         window_x = int(
             (screen_width / 2) - window_width / 2
         )
         window_y = int(
-            (screen_height / 2)
-            - window_height / 2
+            (screen_height / 2) - window_height / 2
         )
 
         self.window.geometry(
@@ -65,13 +64,20 @@ class GameWindow:
         self.canvas.delete("all")
 
         # Draw food
-        self.canvas.create_rectangle(
-            self.game.food.x,
-            self.game.food.y,
-            self.game.food.x + TILE_SIZE,
-            self.game.food.y + TILE_SIZE,
-            fill=FOOD_COLOR,
-        )
+        if self.game.current_fruit:
+            self.canvas.create_image(
+                self.game.food.x + TILE_SIZE // 2,
+                self.game.food.y + TILE_SIZE // 2,
+                image=self.game.current_fruit,
+            )
+        else:
+            self.canvas.create_rectangle(
+                self.game.food.x,
+                self.game.food.y,
+                self.game.food.x + TILE_SIZE,
+                self.game.food.y + TILE_SIZE,
+                fill=FOOD_COLOR,
+            )
 
         # Draw snake head
         self.canvas.create_rectangle(
@@ -120,9 +126,7 @@ class GameWindow:
             self._draw_game_over()
 
         # Schedule next frame
-        self.window.after(
-            GAME_SPEED, self._game_loop
-        )
+        self.window.after(GAME_SPEED, self._game_loop)
 
     def run(self):
         """Start the game"""

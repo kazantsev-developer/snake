@@ -4,11 +4,13 @@ import random
 from .tile import Tile
 from .config import *
 from .sound import Sound
+from .images import FruitImages
 
 
 class Game:
     def __init__(self):
         """Initialize game state"""
+        self.fruits = FruitImages()
         self.sound = Sound()
         self.reset_game()
 
@@ -26,10 +28,10 @@ class Game:
             INITIAL_FOOD_Y * TILE_SIZE,
         )
 
+        self.current_fruit = self.fruits.get_random()
+
         # Initialize game variables
-        self.snake_body = (
-            []
-        )  # multiple snake tiles
+        self.snake_body = []  # multiple snake tiles
         self.velocityX = 0
         self.velocityY = 0
         self.game_over = False
@@ -41,28 +43,16 @@ class Game:
             return
 
         # Prevent 180 degree turns
-        if (
-            direction == "Up"
-            and self.velocityY != 1
-        ):
+        if direction == "Up" and self.velocityY != 1:
             self.velocityX = 0
             self.velocityY = -1
-        elif (
-            direction == "Right"
-            and self.velocityX != -1
-        ):
+        elif direction == "Right" and self.velocityX != -1:
             self.velocityX = 1
             self.velocityY = 0
-        elif (
-            direction == "Down"
-            and self.velocityY != -1
-        ):
+        elif direction == "Down" and self.velocityY != -1:
             self.velocityX = 0
             self.velocityY = 1
-        elif (
-            direction == "Left"
-            and self.velocityX != 1
-        ):
+        elif direction == "Left" and self.velocityX != 1:
             self.velocityX = -1
             self.velocityY = 0
 
@@ -101,20 +91,17 @@ class Game:
                 Tile(self.food.x, self.food.y)
             )
             self.food.x = (
-                random.randint(0, COLS - 1)
-                * TILE_SIZE
+                random.randint(0, COLS - 1) * TILE_SIZE
             )
             self.food.y = (
-                random.randint(0, ROWS - 1)
-                * TILE_SIZE
+                random.randint(0, ROWS - 1) * TILE_SIZE
             )
             self.score += 1
             self.sound.sound_eat()
+            self.current_fruit = self.fruits.get_random()
 
         # Update snake body position
-        for i in range(
-            len(self.snake_body) - 1, -1, -1
-        ):
+        for i in range(len(self.snake_body) - 1, -1, -1):
             tile = self.snake_body[i]
             if i == 0:
                 # First body segment follows head
