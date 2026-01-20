@@ -3,11 +3,13 @@
 import random
 from .tile import Tile
 from .config import *
+from .sound import Sound
 
 
 class Game:
     def __init__(self):
         """Initialize game state"""
+        self.sound = Sound()
         self.reset_game()
 
     def reset_game(self):
@@ -77,6 +79,7 @@ class Game:
             or self.snake.y >= WINDOW_HEIGHT
         ):
             self.game_over = True
+            self.sound.sound_game_over()
             return False
 
         # Check self collision
@@ -86,6 +89,7 @@ class Game:
                 and self.snake.y == tile.y
             ):
                 self.game_over = True
+                self.sound.sound_game_over()
                 return False
 
         # Check food collision
@@ -105,6 +109,7 @@ class Game:
                 * TILE_SIZE
             )
             self.score += 1
+            self.sound.sound_eat()
 
         # Update snake body position
         for i in range(
